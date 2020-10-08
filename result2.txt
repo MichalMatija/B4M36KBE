@@ -1,0 +1,2 @@
+Answer: We can see that some hex characters are repeated (404b48484504 is same like 404b48484504)
+Plaintext is: dolla dolla bill yo
