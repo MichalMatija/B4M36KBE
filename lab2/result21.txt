@@ -1,0 +1,5 @@
+I, Michal, understand that cryptography is easy to mess up, and
+that I will not carelessly combine pieces of cryptographic ciphers to
+encrypt my users' data. I will not write crypto code myself, but defer to
+high-level libraries written by experts who took the right decisions for me,
+like NaCL.

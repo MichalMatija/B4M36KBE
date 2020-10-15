@@ -1,0 +1,8 @@
+2. Ciphertext of welcome("Jim") is: d4d7730a2d4255c88dead80a2ad924f2b114fddb898d7ef8abdfefef30d552863f62b0605102e0186402df7666edcec7
+3. Ciphertext of 1010..104e9eb1df207c25bebdcfc57385251689
+4. Ciphertext of plaintext "you are an admin" 7edb62ceff6a92e3a59029a06e5e622b
+5. Ciphertext is: 067a7ecc39239390acb3d5fa7e0413ca7edb62ceff6a92e3a59029a06e5e622b
+6. Jim decprytion: Your name is Jim and you are a user
+6. admin decprytion: you are an admin
+6. your_name_is + admin decprytion: Your name is    you are an admin
+7. The problem is, I can find out the secret message in function
