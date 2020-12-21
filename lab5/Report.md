@@ -6,7 +6,7 @@ I compared both the source codes of pages where I used the following website for
 Below in the image, we can see the difference.
 ![comparison of two html pages](comparison%20of%20two%20html%20pages.jpg)
 
-##2. Step (create key)
+## 2. Step (create key)  
 According to the image from the first step, we know that number of all keys is **3,000** because each random number from function ```ECDSA.getBigRandom(n)``` uses module 3,000.
 Therefore I changed the source code from the assignment and generate all 3,000 public addresses and private keys.
 ```javascript
